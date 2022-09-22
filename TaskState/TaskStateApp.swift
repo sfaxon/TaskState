@@ -12,6 +12,7 @@ struct TaskStateApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+//            ContentViewWithProgress()
         }
     }
 }

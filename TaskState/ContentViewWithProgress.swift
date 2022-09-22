@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  ContentViewWithProgress.swift
 //  TaskState
 //
 //  Created by Seth Faxon on 9/22/22.
@@ -7,13 +7,15 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct ContentViewWithProgress: View {
+    @State private var isProcessingShare = false
     @State private var isSharing = false
     @State private var shareItem: ShareItem?
 
     var body: some View {
         VStack {
-            Text("Content View")
+            Text("Content View With Progress")
+            progressView
             Button {
                 Task {
                     try? await doTask()
@@ -27,7 +29,9 @@ struct ContentView: View {
     }
 
     func doTask() async throws {
+        isProcessingShare = true
         shareItem = try? await ShareItem.build()
+        isProcessingShare = false
         isSharing = true
     }
 
@@ -37,31 +41,18 @@ struct ContentView: View {
             SheetView(shareItem: share)
         }
     }
-}
 
-struct SheetView: View {
-    let shareItem: ShareItem
-
-    var body: some View {
-        VStack {
-            Text("it worked!")
-            Text("shareItem.value is \(shareItem.value)")
+    var progressView: some View {
+        Group {
+            if isProcessingShare {
+                ProgressView()
+            }
         }
     }
 }
 
-class ShareItem {
-    let value = 1 // no real meaning
-    init() {}
-
-    static func build() async throws -> ShareItem {
-        try await Task.sleep(nanoseconds: 1000)
-        return ShareItem()
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
+struct ContentViewWithProgress_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentViewWithProgress()
     }
 }
